@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>婆さん乱舞警告</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #002244;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .window {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #1c1c3c;
+      color: white;
+      width: 600px;
+      padding: 30px;
+      border: 2px solid #0066cc;
+      border-radius: 8px;
+      z-index: 10;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #ff3333;
+      margin-bottom: 15px;
+    }
+
+    .important {
+      color: #ffcc00;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    .call {
+      background-color: #0044aa;
+      padding: 10px;
+      margin-top: 20px;
+      border-radius: 5px;
+    }
+
+    .obasan {
+      position: absolute;
+      width: 80px;
+      z-index: 1;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="window">
+    <div class="title">重大な脅威が検出されました！</div>
+    <p>あなたのPCは「Win32/Wacatac.B!ml」に感染しています。<br>
+    システムはおばあさんでいっぱいになりました。</p>
+
+    <div class="important">
+      【重要】すするのを止めるにはただちにサポートへお電話を。
+    </div>
+    <div class="call">
+      📞 0120-BAA-BAA（24時間啜り対応）
+    </div>
+  </div>
+
+  <script>
+    const obasanCount = 15;
+    const images = [];
+
+    for (let i = 0; i < obasanCount; i++) {
+      const img = document.createElement('img');
+      img.src = 'obasan.png'; // ラーメン啜る画像のパス
+      img.classList.add('obasan');
+      document.body.appendChild(img);
+
+      const speedX = (Math.random() - 0.5) * 4;
+      const speedY = (Math.random() - 0.5) * 4;
+
+      images.push({
+        el: img,
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        dx: speedX,
+        dy: speedY
+      });
+    }
+
+    function animate() {
+      images.forEach(obj => {
+        obj.x += obj.dx;
+        obj.y += obj.dy;
+
+        // 壁バウンド
+        if (obj.x < 0 || obj.x > window.innerWidth - 80) obj.dx *= -1;
+        if (obj.y < 0 || obj.y > window.innerHeight - 80) obj.dy *= -1;
+
+        obj.el.style.left = obj.x + 'px';
+        obj.el.style.top = obj.y + 'px';
+      });
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+</body>
+</html>
