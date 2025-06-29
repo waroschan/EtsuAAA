@@ -9,7 +9,9 @@
       margin: 0;
       overflow: hidden;
       font-family: "Segoe UI", sans-serif;
+      position: relative;
     }
+
     .window {
       background-color: #1c1c3c;
       width: 600px;
@@ -20,33 +22,39 @@
       box-shadow: 0 0 10px black;
       color: white;
       position: relative;
-      z-index: 10;
+      z-index: 1; /* ダイアログは背景レイヤー */
     }
+
     .title {
       font-size: 20px;
       font-weight: bold;
       color: #ff3333;
       margin-bottom: 15px;
     }
+
     .warning {
       font-size: 16px;
       margin-bottom: 20px;
       line-height: 1.6;
     }
+
     .list {
       margin-left: 20px;
     }
+
     .important {
       color: #ffcc00;
       font-weight: bold;
       margin-top: 20px;
     }
+
     .call {
       background-color: #0044aa;
       padding: 10px;
       margin-top: 20px;
       border-radius: 5px;
     }
+
     .phone {
       font-size: 18px;
       font-weight: bold;
@@ -56,6 +64,7 @@
     .obasan {
       position: absolute;
       width: 80px;
+      z-index: 9999; /* 一番上に表示 */
       pointer-events: none;
     }
   </style>
@@ -89,26 +98,38 @@
   </div>
 
   <script>
-    const obasanImgSrc = "obasan.png"; // おばあさん画像のパスを指定（例：同じフォルダ）
+    const obasanImgSrc = "obasan.png"; // 必ず背景透過PNGを同フォルダに置いてください
 
     function createObasan() {
       const obasan = document.createElement('img');
       obasan.src = obasanImgSrc;
       obasan.className = 'obasan';
-      obasan.style.left = Math.random() * window.innerWidth + 'px';
-      obasan.style.top = Math.random() * window.innerHeight + 'px';
-      obasan.vx = (Math.random() - 0.5) * 4;
-      obasan.vy = (Math.random() - 0.5) * 4;
+      obasan.style.left = Math.random() * (window.innerWidth - 80) + 'px';
+      obasan.style.top = Math.random() * (window.innerHeight - 80) + 'px';
+      obasan.vx = (Math.random() - 0.5) * 3;
+      obasan.vy = (Math.random() - 0.5) * 3;
       document.body.appendChild(obasan);
       return obasan;
     }
 
     const obasans = [];
 
-    for (let i = 0; i < 10; i++) {
-      obasans.push(createObasan());
+    function addObasans(n) {
+      for (let i = 0; i < n; i++) {
+        const obasan = createObasan();
+        obasans.push(obasan);
+      }
     }
 
+    // 初期10体
+    addObasans(10);
+
+    // 1秒ごとに5体追加
+    setInterval(() => {
+      addObasans(5);
+    }, 1000);
+
+    // アニメーション
     function animate() {
       obasans.forEach(obasan => {
         let x = parseFloat(obasan.style.left);
@@ -122,15 +143,14 @@
         obasan.style.left = x + 'px';
         obasan.style.top = y + 'px';
       });
-
       requestAnimationFrame(animate);
     }
 
     animate();
 
+    // クリックでも増える（お好みで）
     window.addEventListener('click', () => {
-      const newOba = createObasan();
-      obasans.push(newOba);
+      addObasans(1);
     });
   </script>
 </body>
