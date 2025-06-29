@@ -2,110 +2,136 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>婆さん乱舞警告</title>
+  <title>Windows セキュリティ警告</title>
   <style>
     body {
+      background-color: #003366;
       margin: 0;
       overflow: hidden;
-      background-color: #002244;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: "Segoe UI", sans-serif;
     }
-
     .window {
-      position: absolute;
-      top: 50px;
-      left: 50%;
-      transform: translateX(-50%);
       background-color: #1c1c3c;
-      color: white;
       width: 600px;
+      margin: 50px auto;
       padding: 30px;
       border: 2px solid #0066cc;
       border-radius: 8px;
+      box-shadow: 0 0 10px black;
+      color: white;
+      position: relative;
       z-index: 10;
     }
-
     .title {
       font-size: 20px;
       font-weight: bold;
       color: #ff3333;
       margin-bottom: 15px;
     }
-
+    .warning {
+      font-size: 16px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .list {
+      margin-left: 20px;
+    }
     .important {
       color: #ffcc00;
       font-weight: bold;
       margin-top: 20px;
     }
-
     .call {
       background-color: #0044aa;
       padding: 10px;
       margin-top: 20px;
       border-radius: 5px;
     }
+    .phone {
+      font-size: 18px;
+      font-weight: bold;
+      color: #ffffff;
+    }
 
     .obasan {
       position: absolute;
       width: 80px;
-      z-index: 1;
       pointer-events: none;
     }
   </style>
 </head>
 <body>
-
   <div class="window">
     <div class="title">重大な脅威が検出されました！</div>
-    <p>あなたのPCは「Win32/Wacatac.B!ml」に感染しています。<br>
-    システムはおばあさんでいっぱいになりました。</p>
-
+    <div class="warning">
+      あなたのPCは「トロイの木馬：<br>Win32/Wacatac.B!ml」に感染しています。<br>
+      違法なポルノ・ハッキングツール・銀行情報を含むファイルが発見されました。
+    </div>
+    <div class="warning">
+      <strong>Windows は安全のため自動的にロックされました。</strong>
+    </div>
+    <div class="warning">
+      次の手順に従わないと、以下の情報が永久に削除される可能性があります：
+      <ul class="list">
+        <li>写真・動画・文書ファイル</li>
+        <li>銀行・クレジットカード情報</li>
+        <li>SNS/メールのログイン情報</li>
+      </ul>
+    </div>
     <div class="important">
-      【重要】すするのを止めるにはただちにサポートへお電話を。
+      【重要】とこどき、法的手続きが進行する可能性があります。
     </div>
     <div class="call">
-      📞 0120-BAA-BAA（24時間啜り対応）
+      ロックを解除するには、ただちにサポートへお電話ください。<br>
+      📞 フリーダイヤル：<span class="phone">0120-XXX-XXX</span><br>
+      （営業時間：24時間365日対応）
     </div>
   </div>
 
   <script>
-    const obasanCount = 15;
-    const images = [];
+    const obasanImgSrc = "obasan.png"; // おばあさん画像のパスを指定（例：同じフォルダ）
 
-    for (let i = 0; i < obasanCount; i++) {
-      const img = document.createElement('img');
-      img.src = 'obasan.png'; // ラーメン啜る画像のパス
-      img.classList.add('obasan');
-      document.body.appendChild(img);
+    function createObasan() {
+      const obasan = document.createElement('img');
+      obasan.src = obasanImgSrc;
+      obasan.className = 'obasan';
+      obasan.style.left = Math.random() * window.innerWidth + 'px';
+      obasan.style.top = Math.random() * window.innerHeight + 'px';
+      obasan.vx = (Math.random() - 0.5) * 4;
+      obasan.vy = (Math.random() - 0.5) * 4;
+      document.body.appendChild(obasan);
+      return obasan;
+    }
 
-      const speedX = (Math.random() - 0.5) * 4;
-      const speedY = (Math.random() - 0.5) * 4;
+    const obasans = [];
 
-      images.push({
-        el: img,
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        dx: speedX,
-        dy: speedY
-      });
+    for (let i = 0; i < 10; i++) {
+      obasans.push(createObasan());
     }
 
     function animate() {
-      images.forEach(obj => {
-        obj.x += obj.dx;
-        obj.y += obj.dy;
+      obasans.forEach(obasan => {
+        let x = parseFloat(obasan.style.left);
+        let y = parseFloat(obasan.style.top);
+        x += obasan.vx;
+        y += obasan.vy;
 
-        // 壁バウンド
-        if (obj.x < 0 || obj.x > window.innerWidth - 80) obj.dx *= -1;
-        if (obj.y < 0 || obj.y > window.innerHeight - 80) obj.dy *= -1;
+        if (x < 0 || x > window.innerWidth - 80) obasan.vx *= -1;
+        if (y < 0 || y > window.innerHeight - 80) obasan.vy *= -1;
 
-        obj.el.style.left = obj.x + 'px';
-        obj.el.style.top = obj.y + 'px';
+        obasan.style.left = x + 'px';
+        obasan.style.top = y + 'px';
       });
+
       requestAnimationFrame(animate);
     }
 
     animate();
+
+    window.addEventListener('click', () => {
+      const newOba = createObasan();
+      obasans.push(newOba);
+    });
   </script>
 </body>
 </html>
