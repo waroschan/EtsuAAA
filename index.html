@@ -22,7 +22,7 @@
       box-shadow: 0 0 10px black;
       color: white;
       position: relative;
-      z-index: 1; /* ダイアログは背景レイヤー */
+      z-index: 1;
     }
 
     .title {
@@ -64,7 +64,7 @@
     .obasan {
       position: absolute;
       width: 80px;
-      z-index: 9999; /* 一番上に表示 */
+      z-index: 9999;
       pointer-events: none;
     }
   </style>
@@ -97,8 +97,11 @@
     </div>
   </div>
 
+  <audio id="slurp" src="suzosu.mp3" preload="auto"></audio>
+
   <script>
-    const obasanImgSrc = "obasan.png"; // 必ず背景透過PNGを同フォルダに置いてください
+    const obasanImgSrc = "obasan.png";
+    const slurpAudio = document.getElementById("slurp");
 
     function createObasan() {
       const obasan = document.createElement('img');
@@ -121,15 +124,12 @@
       }
     }
 
-    // 初期10体
     addObasans(10);
 
-    // 1秒ごとに5体追加
     setInterval(() => {
       addObasans(5);
     }, 1000);
 
-    // アニメーション
     function animate() {
       obasans.forEach(obasan => {
         let x = parseFloat(obasan.style.left);
@@ -148,10 +148,23 @@
 
     animate();
 
-    // クリックでも増える（お好みで）
     window.addEventListener('click', () => {
       addObasans(1);
     });
+
+    // 啜る音をランダム再生（2～5秒間隔）
+    function playSlurpLoop() {
+      setInterval(() => {
+        const clone = slurpAudio.cloneNode();
+        clone.volume = 0.5;
+        clone.play();
+      }, Math.random() * 3000 + 2000); // 2～5秒ランダム
+    }
+
+    // 自動再生制限対応：最初のユーザー操作で音を開始
+    window.addEventListener('click', () => {
+      playSlurpLoop();
+    }, { once: true });
   </script>
 </body>
 </html>
