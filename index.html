@@ -23,6 +23,15 @@
       color: white;
       position: relative;
       z-index: 1;
+      animation: shake 0.3s infinite;
+    }
+
+    @keyframes shake {
+      0% { transform: translate(1px, 1px); }
+      25% { transform: translate(-1px, 2px); }
+      50% { transform: translate(2px, -2px); }
+      75% { transform: translate(-2px, 1px); }
+      100% { transform: translate(1px, -1px); }
     }
 
     .title {
@@ -38,10 +47,6 @@
       line-height: 1.6;
     }
 
-    .list {
-      margin-left: 20px;
-    }
-
     .important {
       color: #ffcc00;
       font-weight: bold;
@@ -55,10 +60,18 @@
       border-radius: 5px;
     }
 
-    .phone {
-      font-size: 18px;
+    .call::after {
+      content: "⬆ 今すぐ課金せよ！";
+      display: block;
+      margin-top: 5px;
+      color: #ff6666;
       font-weight: bold;
-      color: #ffffff;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 50%, 100% { opacity: 1; }
+      25%, 75% { opacity: 0; }
     }
 
     .obasan {
@@ -66,6 +79,7 @@
       width: 80px;
       z-index: 9999;
       pointer-events: none;
+      transition: left 0.1s linear, top 0.1s linear;
     }
   </style>
 </head>
@@ -80,45 +94,37 @@
       ウイルス界の爆弾やで、それもマジもんの爆弾や‼️
     </div>
     <div class="warning">
-      しかもや、<br>
-      コピーする<br>
-      編集する<br>
-      違法ポルノ・ハッキングツール・銀行データあるやん？<br>
-      …とか、お前の人生まるっと見られてる状態やぞ…。
+      しかもや、コピー、編集、違法ポルノ、銀行データ……<br>
+      お前の人生、まるっと見られてる状態やぞ…。
     </div>
     <div class="important">
       🔐 Windows、勝手にロックしたった！
     </div>
     <div class="warning">
-      放っといたらな、<br><br>
-      📷 写真？<b>消える</b><br>
-      🎥 動画？<b>消える</b><br>
-      📄 書類？<b>全部消える</b><br>
-      🔑 SNSログイン？銀行アカ？<b>これもオシャカやで</b>
+      写真？消える<br>
+      動画？消える<br>
+      書類？全部消える<br>
+      SNSログイン？銀行アカ？これもオシャカやで
     </div>
     <div class="important">
       ⏱️ 今すぐやらんと永久に消去警報や！<br>
-      0か100かや。<br>
       復旧？それともファイル喪失祭り？<br>
       選ぶのは…<b>お前や！！！</b>
     </div>
     <div class="call">
       📞 緊急手順：<br>
-      24時間365日、マイクロソフト認定 “技術者” がリモート救済！<br>
-      …と言う名の<b>“金むしり取り電話”</b>や！<br>
-      でもまあ、騙されたくなけりゃいい加減な真似せんことや！！
-    </div>
-    <div class="important" style="color: red; font-size: 18px;">
-      🛑 放置するなら最後まで地獄味わえ！！<br>
-      サポートに電話しなきゃ<b>人生終わりモード全開</b>やで？
+      24時間365日、認定 “技術者” がリモート救済！<br>
+      （金むしり取られモード注意）
     </div>
   </div>
 
   <audio id="slurp" src="suzosu.m4a" preload="auto"></audio>
 
   <script>
-    const obasanImgSrc = "obasan.png"; // 麺を啜るおばあさん画像
+    const obasanImgSrc = "obasan.png";
     const slurpAudio = document.getElementById("slurp");
+    const obasans = [];
+    let multiplyRate = 5;
 
     function createObasan() {
       const obasan = document.createElement('img');
@@ -132,8 +138,6 @@
       return obasan;
     }
 
-    const obasans = [];
-
     function addObasans(n) {
       for (let i = 0; i < n; i++) {
         const obasan = createObasan();
@@ -143,9 +147,24 @@
 
     addObasans(10);
 
+    // 1秒ごとに増殖、時間とともに増殖数増加
     setInterval(() => {
-      addObasans(5);
+      addObasans(multiplyRate);
+      multiplyRate += 1;
     }, 1000);
+
+    // カーソルに反応しておばあさんが逃げる
+    window.addEventListener('mousemove', e => {
+      obasans.forEach(obasan => {
+        const dx = parseFloat(obasan.style.left) - e.clientX;
+        const dy = parseFloat(obasan.style.top) - e.clientY;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 100) {
+          obasan.style.left = parseFloat(obasan.style.left) + (dx / dist) * 50 + 'px';
+          obasan.style.top = parseFloat(obasan.style.top) + (dy / dist) * 50 + 'px';
+        }
+      });
+    });
 
     function animate() {
       obasans.forEach(obasan => {
@@ -165,11 +184,7 @@
 
     animate();
 
-    window.addEventListener('click', () => {
-      addObasans(1);
-    });
-
-    // 音をランダムにループ再生（2〜5秒間隔）
+    // ズゾ音ループ
     function playSlurpLoop() {
       setInterval(() => {
         const clone = slurpAudio.cloneNode();
@@ -178,9 +193,9 @@
       }, Math.random() * 3000 + 2000);
     }
 
-    // 自動再生制限対策：ユーザー操作後に音開始
     window.addEventListener('click', () => {
-      playSlurpLoop();
+      addObasans(1);
+      playSlurpLoop(); // 初回クリックで音声解禁
     }, { once: true });
   </script>
 </body>
